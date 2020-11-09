@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleSceneIntro.h"
 #include "p2Point.h"
 #include "math.h"
 
@@ -27,7 +28,6 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
-
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 	world->SetContactListener(this);
 
@@ -35,18 +35,147 @@ bool ModulePhysics::Start()
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
 
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	// ------------------------------------- WALL -----------------------------
+	int wall[98] = {
+		649, 1097,
+		648, 551,
+		642, 529,
+		626, 503,
+		610, 487,
+		603, 482,
+		604, 465,
+		595, 454,
+		537, 440,
+		528, 449,
+		508, 492,
+		369, 490,
+		344, 443,
+		334, 440,
+		280, 455,
+		275, 461,
+		274, 474,
+		274, 481,
+		254, 502,
+		234, 537,
+		228, 563,
+		230, 595,
+		236, 621,
+		243, 658,
+		269, 747,
+		260, 752,
+		248, 789,
+		236, 824,
+		237, 847,
+		265, 920,
+		264, 1041,
+		327, 1097,
+		325, 1162,
+		616, 1157,
+		618, 1098,
+		613, 868,
+		611, 672,
+		591, 627,
+		597, 619,
+		603, 611,
+		601, 598,
+		600, 591,
+		622, 614,
+		622, 869,
+		622, 979,
+		649, 979,
+		649, 985,
+		622, 984,
+		623, 1096
+	};
 
-	b2Body* big_ball = world->CreateBody(&body);
+	int internal_line[64] = {
+		501, 828,
+		500, 777,
+		495, 745,
+		486, 707,
+		473, 684,
+		454, 671,
+		433, 661,
+		406, 657,
+		384, 660,
+		358, 668,
+		333, 689,
+		327, 700,
+		325, 715,
+		327, 733,
+		330, 747,
+		343, 772,
+		336, 756,
+		330, 740,
+		327, 722,
+		329, 703,
+		340, 685,
+		354, 674,
+		370, 665,
+		395, 660,
+		415, 659,
+		440, 665,
+		460, 676,
+		476, 692,
+		481, 702,
+		489, 725,
+		496, 760,
+		499, 790
+	};
 
-	b2CircleShape shape;
-	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
-
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	big_ball->CreateFixture(&fixture);
+	int external_line[96] = {
+		315, 787,
+		307, 768,
+		303, 748,
+		302, 726,
+		304, 707,
+		311, 690,
+		328, 668,
+		338, 660,
+		354, 651,
+		365, 647,
+		376, 644,
+		409, 640,
+		423, 642,
+		437, 643,
+		451, 649,
+		462, 654,
+		479, 666,
+		495, 683,
+		504, 698,
+		511, 714,
+		515, 730,
+		517, 755,
+		518, 782,
+		520, 825,
+		520, 789,
+		519, 763,
+		517, 738,
+		515, 720,
+		509, 705,
+		500, 685,
+		486, 670,
+		469, 656,
+		457, 649,
+		444, 644,
+		430, 640,
+		416, 639,
+		400, 639,
+		384, 641,
+		370, 643,
+		358, 647,
+		343, 654,
+		321, 674,
+		312, 685,
+		305, 700,
+		301, 712,
+		299, 739,
+		302, 761,
+		310, 782
+	};
+	App->scene_intro->clicker.add(CreateChain(x, y, wall, 98));
+	App->scene_intro->clicker.add(CreateChain(x, y, internal_line, 64));
+	App->scene_intro->clicker.add(CreateChain(x, y, external_line, 96));
 
 	return true;
 }
@@ -149,7 +278,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);

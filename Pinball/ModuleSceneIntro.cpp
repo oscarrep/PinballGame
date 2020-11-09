@@ -9,7 +9,8 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	circle = box = sprites = NULL;
+	circle = box = NULL;
+	sprites = NULL;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -62,13 +63,13 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 10));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 8));
 		circles.getLast()->data->listener = this;
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-		clicker.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 27));
+		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 20,40));
 	}
 
 	/*if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
