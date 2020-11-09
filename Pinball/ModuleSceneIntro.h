@@ -18,17 +18,27 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
-	p2List<PhysBody*> circles;
-	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> clicker;
+	p2List<PhysBody*>	circles;
+	p2List<PhysBody*>	boxes;
+	p2List<PhysBody*>	clicker;
 
-	SDL_Texture* circle;
-	SDL_Texture* box;
-	SDL_Texture* sprites;
-	uint bonus_fx;
+	PhysBody*			ball;
+	PhysBody*			circlePoint;
+	PhysBody*			bouncer;
 
-	SDL_Rect tableRect;
-	SDL_Rect ballRect;
-	SDL_Rect clickerRect;
+	SDL_Texture*		circle;
+	SDL_Texture*		box;
+	SDL_Texture*		sprites;
 
+	SDL_Rect			tableRect;
+	SDL_Rect			ballRect;
+	SDL_Rect			clickerRect;
+	SDL_Rect			blueCircle;
+	SDL_Rect			orangeCircle;
+	
+	iPoint				ballPos; 
+	iPoint				circlePos; 
+	iPoint				bouncerPos;
+
+	uint				bonus_fx;
 };

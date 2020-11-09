@@ -44,6 +44,31 @@ bool ModuleSceneIntro::Start()
 	ballRect.h = 19;
 	ballRect.w = 20;
 
+	blueCircle.x = 9;
+	blueCircle.y = 519;
+	blueCircle.h = 37;
+	blueCircle.w = 38;
+
+	orangeCircle.x = 22;
+	orangeCircle.y = 630;
+	orangeCircle.h = 28;
+	orangeCircle.w = 29;
+
+	ballPos.x = SCREEN_WIDTH / 2;
+	ballPos.y = SCREEN_HEIGHT / 2 - 200;
+	circlePos.x = SCREEN_WIDTH / 2;
+	circlePos.y = SCREEN_HEIGHT / 2;
+	bouncerPos.x = SCREEN_WIDTH / 2;
+	bouncerPos.y = SCREEN_HEIGHT / 2 - 100;
+		   
+	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
+
+	/*circlepoint = App->physics->CreateCircleStatic(circlepos.x, circlepos.y, 18);
+	circlepoint->body->GetFixtureList()->SetRestitution(1.5f);*/
+	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
+	bouncer->body->GetFixtureList()->SetDensity(10.0f);
+	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
+
 	return ret;
 }
 
@@ -85,6 +110,21 @@ update_status ModuleSceneIntro::Update()
 
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* c = circles.getFirst();
+
+	ball->GetPosition(ballPos.x, ballPos.y);
+	App->renderer->Blit(sprites, ballPos.x, ballPos.y, &ballRect);
+	/*circlepoint->GetPosition(circlepos.x, circlepos.y);
+	if (!col)
+	{
+	App->renderer->Blit(table, circlepos.x, circlepos.y, &bluecircle);
+	}
+	else
+	{
+	App->renderer->Blit(table, circlepos.x, circlepos.y, &orangecircle);
+	}
+	*/
+	bouncer->GetPosition(bouncerPos.x, bouncerPos.y);
+	App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &clickerRect);
 
 	while(c != NULL)
 	{
