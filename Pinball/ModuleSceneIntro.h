@@ -20,13 +20,15 @@ public:
 public:
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> ricks;
+	p2List<PhysBody*> clicker;
 
 	SDL_Texture* circle;
 	SDL_Texture* box;
-	SDL_Texture* rick;
-	SDL_Texture* table;
+	SDL_Texture* sprites;
 	uint bonus_fx;
 
-	SDL_Rect tablerect;
+	SDL_Rect tableRect;
+	SDL_Rect ballRect;
+	SDL_Rect clickerRect;
+
 };

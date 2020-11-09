@@ -9,8 +9,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	circle = box = rick = NULL;
-	table = NULL;
+	circle = box = sprites = NULL;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -26,14 +25,24 @@ bool ModuleSceneIntro::Start()
 
 	circle = App->textures->Load("pinball/wheel.png"); 
 	box = App->textures->Load("pinball/crate.png");
-	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
-	table = App->textures->Load("pinball/Texturas2.png");
+	sprites = App->textures->Load("pinball/Textures2.png");
 
-	tablerect.x = 222;
-	tablerect.y = 369;
-	tablerect.h = 730;
-	tablerect.w = 442;
+	tableRect.x = 222;
+	tableRect.y = 369;
+	tableRect.h = 730;
+	tableRect.w = 442;
+
+	clickerRect.x = 9;
+	clickerRect.y = 565;
+	clickerRect.w = 56;
+	clickerRect.h = 54;
+
+	ballRect.x = 11;
+	ballRect.y = 427;
+	ballRect.h = 19;
+	ballRect.w = 20;
+
 	return ret;
 }
 
@@ -42,63 +51,30 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 
+	App->textures->Unload(sprites);
+
 	return true;
 }
 
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	App->renderer->Blit(sprites, 0, 0, &tableRect);
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 10));
 		circles.getLast()->data->listener = this;
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
+		clicker.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 27));
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	/*if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
-	}
+		
+	}*/
 
 	// Prepare for raycast ------------------------------------------------------
 	
@@ -113,30 +89,19 @@ update_status ModuleSceneIntro::Update()
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(sprites, x, y, &ballRect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
-	c = boxes.getFirst();
+	c = clicker.getFirst();
 
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(sprites, x, y, &clickerRect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
-
-	c = ricks.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
-	App->renderer->Blit(table, 0, 0, &tablerect);
 
 	return UPDATE_CONTINUE;
 }
