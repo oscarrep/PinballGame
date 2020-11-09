@@ -34,10 +34,15 @@ bool ModuleSceneIntro::Start()
 	tableRect.h = 730;
 	tableRect.w = 442;
 
-	clickerRect.x = 9;
-	clickerRect.y = 565;
-	clickerRect.w = 56;
-	clickerRect.h = 54;
+	bouncerRect.x = 9;
+	bouncerRect.y = 565;
+	bouncerRect.w = 56;
+	bouncerRect.h = 54;
+
+	bouncerLight.x = 9;
+	bouncerLight.y = 833;
+	bouncerLight.h = 54;
+	bouncerLight.w = 56;
 
 	ballRect.x = 11;
 	ballRect.y = 427;
@@ -68,6 +73,7 @@ bool ModuleSceneIntro::Start()
 	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
 	bouncer->body->GetFixtureList()->SetDensity(10.0f);
 	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
+	sensor = App->physics->CreateCircleSensor(bouncerPos.x, bouncerPos.y, 27);
 
 	return ret;
 }
@@ -112,6 +118,7 @@ update_status ModuleSceneIntro::Update()
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	ball->GetPosition(ballPos.x, ballPos.y);
+	ball->listener = this;
 	App->renderer->Blit(sprites, ballPos.x, ballPos.y, &ballRect);
 	/*circlepoint->GetPosition(circlepos.x, circlepos.y);
 	if (!col)
@@ -124,7 +131,14 @@ update_status ModuleSceneIntro::Update()
 	}
 	*/
 	bouncer->GetPosition(bouncerPos.x, bouncerPos.y);
-	App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &clickerRect);
+	if (!collision)
+	{
+		App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &bouncerRect);
+	}
+	else if (collision)
+	{
+		App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &bouncerLight);
+	}
 
 	while(c != NULL)
 	{
@@ -134,20 +148,38 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 
-	c = clicker.getFirst();
+	/*c = Bouncer.getFirst();
 
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		App->renderer->Blit(sprites, x, y, &clickerRect, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(sprites, x, y, &bouncerRect, 1.0f, c->data->GetRotation());
 		c = c->next;
-	}
+	}*/
 
 	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
-	/*App->audio->PlayFx(bonus_fx);*/
+	if (bodyA != NULL && bodyB != NULL)
+	{
+		if (bodyA == ball && bodyB == bouncer || bodyA == bouncer && bodyB == ball)
+		{
+			count++;
+			if (count == 1)
+			{
+				collision = true;
+			}
+			if (count == 2)
+			{
+				collision = false;
+				count = 0;
+			}
+			App->audio->PlayFx(bonus_fx);
+			LOG("COLLISION");
+		}
+
+	}
 }
