@@ -59,8 +59,41 @@ bool ModuleSceneIntro::Start()
 	orangeCircle.h = 35;
 	orangeCircle.w = 37;
 
+	int rightBumper[10] = 
+	{
+		547, 1048,
+		587, 974,
+		588, 957,
+		581, 946,
+		524, 1048
+	};
+
+	int leftBumper[14] = 
+	{
+		365, 1046,
+		310, 946,
+		303, 957,
+		303, 975,
+		349, 1055,
+		357, 1056,
+		363, 1052
+	};
+
+	int topBumper[12] = 
+	{
+		566, 872,
+		599, 870,
+		610, 862,
+		619, 836,
+		614, 832,
+		562, 868
+	};
+
+	bumperPos.x = -SCREEN_WIDTH / 2.0f;
+	bumperPos.y = -SCREEN_HEIGHT / 2.08f;
+
 	ballPos.x = SCREEN_WIDTH / 2;
-	ballPos.y = SCREEN_HEIGHT / 2-50;
+	ballPos.y = SCREEN_HEIGHT / 2 - 50;
 	circlePos.x = SCREEN_WIDTH / 2;
 	circlePos.y = SCREEN_HEIGHT / 2;
 	bouncerPos.x = SCREEN_WIDTH / 2;
@@ -74,6 +107,15 @@ bool ModuleSceneIntro::Start()
 	//bouncer->body->GetFixtureList()->SetDensity(10.0f);
 	//bouncer->body->GetFixtureList()->SetRestitution(1.5f);
 	sensor = App->physics->CreateCircleSensor(circlePos.x, circlePos.y, 18);
+
+	rBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, rightBumper, 10);
+	rBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	
+	lBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, leftBumper, 14);
+	lBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	
+	tBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, topBumper, 12);
+	tBumper->body->GetFixtureList()->SetRestitution(2.0f);
 
 	return ret;
 }

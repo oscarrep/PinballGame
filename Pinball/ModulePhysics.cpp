@@ -173,6 +173,7 @@ bool ModulePhysics::Start()
 		302, 761,
 		310, 782
 	};
+
 	App->scene_intro->Bouncer.add(CreateChain(x, y, wall, 98));
 	App->scene_intro->Bouncer.add(CreateChain(x, y, internal_line, 64));
 	App->scene_intro->Bouncer.add(CreateChain(x, y, external_line, 96));

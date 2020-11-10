@@ -28,11 +28,16 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;
 	p2List<PhysBody*>	Bouncer;
+	p2List<PhysBody*>	chains;
+
 
 	PhysBody*			sensor;
 	PhysBody*			ball;
 	PhysBody*			circlePoint;
 	PhysBody*			bouncer;
+	PhysBody*			lBumper;
+	PhysBody*			rBumper;
+	PhysBody*			tBumper;
 
 	SDL_Texture*		circle;
 	SDL_Texture*		box;
@@ -48,6 +53,7 @@ public:
 	iPoint				ballPos; 
 	iPoint				circlePos; 
 	iPoint				bouncerPos;
+	iPoint				bumperPos;
 
 	uint				bonus_fx;
 };
