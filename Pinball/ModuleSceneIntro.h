@@ -22,6 +22,9 @@ public:
 	int count = 0;
 	bool collision = false;
 
+	int count2 = 0;
+	bool collision2 = false;
+
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;
 	p2List<PhysBody*>	Bouncer;

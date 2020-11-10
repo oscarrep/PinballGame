@@ -54,7 +54,7 @@ public:
 	void BeginContact(b2Contact* contact);
 
 	// big static circle as "ground" in the middle of the screen
-	int x = -SCREEN_WIDTH / 4.62f;
+	int x = -SCREEN_WIDTH / 2.0f;
 	int y = -SCREEN_HEIGHT / 2.08f;
 	int diameter = 54;
 

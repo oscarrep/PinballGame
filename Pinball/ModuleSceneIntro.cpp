@@ -54,13 +54,13 @@ bool ModuleSceneIntro::Start()
 	blueCircle.h = 37;
 	blueCircle.w = 38;
 
-	orangeCircle.x = 22;
-	orangeCircle.y = 630;
-	orangeCircle.h = 28;
-	orangeCircle.w = 29;
+	orangeCircle.x = 68;
+	orangeCircle.y = 520;
+	orangeCircle.h = 35;
+	orangeCircle.w = 37;
 
 	ballPos.x = SCREEN_WIDTH / 2;
-	ballPos.y = SCREEN_HEIGHT / 2 - 200;
+	ballPos.y = SCREEN_HEIGHT / 2-50;
 	circlePos.x = SCREEN_WIDTH / 2;
 	circlePos.y = SCREEN_HEIGHT / 2;
 	bouncerPos.x = SCREEN_WIDTH / 2;
@@ -68,12 +68,12 @@ bool ModuleSceneIntro::Start()
 		   
 	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 
-	/*circlepoint = App->physics->CreateCircleStatic(circlepos.x, circlepos.y, 18);
+	/*circlepoint = App->physics->CreateCircleStatic(circlePos.x, circlePos.y, 18);
 	circlepoint->body->GetFixtureList()->SetRestitution(1.5f);*/
-	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
-	bouncer->body->GetFixtureList()->SetDensity(10.0f);
-	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
-	sensor = App->physics->CreateCircleSensor(bouncerPos.x, bouncerPos.y, 27);
+	//bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
+	//bouncer->body->GetFixtureList()->SetDensity(10.0f);
+	//bouncer->body->GetFixtureList()->SetRestitution(1.5f);
+	sensor = App->physics->CreateCircleSensor(circlePos.x, circlePos.y, 18);
 
 	return ret;
 }
@@ -120,17 +120,18 @@ update_status ModuleSceneIntro::Update()
 	ball->GetPosition(ballPos.x, ballPos.y);
 	ball->listener = this;
 	App->renderer->Blit(sprites, ballPos.x, ballPos.y, &ballRect);
-	/*circlepoint->GetPosition(circlepos.x, circlepos.y);
-	if (!col)
+	
+	sensor->GetPosition(circlePos.x, circlePos.y);
+	if (!collision2)
 	{
-	App->renderer->Blit(table, circlepos.x, circlepos.y, &bluecircle);
+		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &blueCircle);
 	}
-	else
+	else if (collision2)
 	{
-	App->renderer->Blit(table, circlepos.x, circlepos.y, &orangecircle);
+		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &orangeCircle);
 	}
-	*/
-	bouncer->GetPosition(bouncerPos.x, bouncerPos.y);
+	
+	/*bouncer->GetPosition(bouncerPos.x, bouncerPos.y);
 	if (!collision)
 	{
 		App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &bouncerRect);
@@ -139,7 +140,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		App->renderer->Blit(sprites, bouncerPos.x, bouncerPos.y, &bouncerLight);
 	}
-
+	*/
 	while(c != NULL)
 	{
 		int x, y;
@@ -179,6 +180,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			App->audio->PlayFx(bonus_fx);
 			LOG("COLLISION");
+		}
+		if (bodyA == ball && bodyB == sensor || bodyA == sensor && bodyB == ball)
+		{
+			count2++;
+			if (count2 == 1)
+			{
+				collision2 = true;
+			}
+			if (count2 == 2)
+			{
+				collision2 = false;
+			}
 		}
 
 	}
