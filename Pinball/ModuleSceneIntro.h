@@ -19,6 +19,8 @@ public:
 
 public:
 
+	int lives = 0;
+
 	//int count = 0;
 	bool collision = false;
 

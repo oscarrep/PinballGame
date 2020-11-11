@@ -143,6 +143,27 @@ update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
 
+	if (ballPos.y >= 768 && lives < 4)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 300;
+		ballPos.y = 600;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
+		lives++;
+		LOG("%i", lives);
+	}
+
+	if (lives == 4 && App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		/*ballPos.x = 422;
+		ballPos.y = 600;*/
+		ballPos.x = 335;
+		ballPos.y = 140;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
+		lives = 0;
+
+	}
+
 	if (rightTP)
 	{
 		App->physics->world->DestroyBody(ball->body);
@@ -185,9 +206,12 @@ update_status ModuleSceneIntro::Update()
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
-	ball->GetPosition(ballPos.x, ballPos.y);
-	ball->listener = this;
-	App->renderer->Blit(sprites, ballPos.x, ballPos.y, &ballRect);
+	if (lives <= 4)
+	{
+		ball->GetPosition(ballPos.x, ballPos.y);
+		ball->listener = this;
+		App->renderer->Blit(sprites,ballPos.x, ballPos.y, &ballRect);
+	}
 	
 	sensor->GetPosition(circlePos.x, circlePos.y);
 	if (!collisionSensor)
