@@ -157,6 +157,12 @@ bool ModuleSceneIntro::Start()
 	
 	sBouncerPos.x = 63;
 	sBouncerPos.y = 529;
+
+	rightFlipperPos = { 271,695 };
+	leftFlipperPos = { 175,695 };
+
+	lFlipper = App->physics->CreateFlipper(leftFlipperPos.x, leftFlipperPos.y, 60, 30, false);
+	rFlipper = App->physics->CreateFlipper(rightFlipperPos.x, rightFlipperPos.y, 60, 30, true);
 		   
 	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 
@@ -217,6 +223,24 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	{
+		rFlipper->body->ApplyTorque(250.0, true);
+	}
+	else if (rFlipper->body->IsAwake())
+	{
+		rFlipper->body->ApplyTorque(-250.0, false);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
+		lFlipper->body->ApplyTorque(-250.0, true);
+	}
+	else if (lFlipper->body->IsAwake())
+	{
+		lFlipper->body->ApplyTorque(250.0, false);
+	}
 
 	if (ballPos.y >= 768 && lifes < 4)
 	{

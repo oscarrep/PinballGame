@@ -59,6 +59,8 @@ public:
 	PhysBody*			tBumper;
 	PhysBody*			lBumper;
 	PhysBody*			rBumper;
+	PhysBody*			rFlipper;
+	PhysBody*			lFlipper;
 
 	SDL_Texture*		circle;
 	SDL_Texture*		box;
@@ -83,6 +85,8 @@ public:
 	iPoint				bumperPos;
 	iPoint				rHolePos;
 	iPoint				lHolePos;
+	iPoint				rightFlipperPos;
+	iPoint				leftFlipperPos;
 
 	uint				bonus_fx;
 };

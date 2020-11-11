@@ -555,3 +555,35 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
 }
+
+PhysBody* ModulePhysics::CreateFlipper(int x, int y, int width, int height, bool right)
+{
+	PhysBody* flipper = CreateRectangle(x, y, width, height);
+	PhysBody* pivot = nullptr;
+	if (!right)
+		pivot = CreateStaticCircle(x - width / 2, y - height / 2, 1);
+	else
+		pivot = CreateStaticCircle(x + width / 2, y - height / 2, 1);
+
+
+	b2RevoluteJointDef jointDef;
+	jointDef.Initialize(pivot->body, flipper->body, pivot->body->GetWorldCenter());
+	/*jointDef.localAnchorA = {(float) width / 2, (float) height / 2 };
+	jointDef.localAnchorB = { 0, 0 };*/
+	jointDef.enableLimit = true;
+	if (right)
+	{
+		jointDef.lowerAngle = -0.05f;			// -90 degrees
+		jointDef.upperAngle = 0.25f * b2_pi;	// 45 degrees
+	}
+	else
+	{
+		jointDef.lowerAngle = -0.25f * b2_pi;	// -90 degrees
+		jointDef.upperAngle = 0.0f;				// 45 degrees
+	}
+	jointDef.collideConnected = false;
+
+	revolute_joint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
+
+	return flipper;
+}
