@@ -19,11 +19,14 @@ public:
 
 public:
 
-	int count = 0;
+	//int count = 0;
 	bool collision = false;
 
-	int count2 = 0;
-	bool collision2 = false;
+	//int count2 = 0;
+	bool collisionSensor = false;
+
+	bool rightTP = false;
+	bool leftTP = false;
 
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;
@@ -32,12 +35,14 @@ public:
 
 
 	PhysBody*			sensor;
+	PhysBody*			rHoleSensor;
+	PhysBody*			lHoleSensor;
 	PhysBody*			ball;
 	PhysBody*			circlePoint;
 	PhysBody*			bouncer;
+	PhysBody*			tBumper;
 	PhysBody*			lBumper;
 	PhysBody*			rBumper;
-	PhysBody*			tBumper;
 
 	SDL_Texture*		circle;
 	SDL_Texture*		box;
@@ -54,6 +59,8 @@ public:
 	iPoint				circlePos; 
 	iPoint				bouncerPos;
 	iPoint				bumperPos;
+	iPoint				rHolePos;
+	iPoint				lHolePos;
 
 	uint				bonus_fx;
 };

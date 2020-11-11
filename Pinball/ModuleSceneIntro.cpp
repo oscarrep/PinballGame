@@ -59,6 +59,16 @@ bool ModuleSceneIntro::Start()
 	orangeCircle.h = 35;
 	orangeCircle.w = 37;
 
+	int topBumper[12] =
+	{
+		566, 872,
+		599, 870,
+		610, 862,
+		619, 836,
+		614, 832,
+		562, 868
+	};
+	
 	int rightBumper[10] = 
 	{
 		547, 1048,
@@ -79,43 +89,41 @@ bool ModuleSceneIntro::Start()
 		363, 1052
 	};
 
-	int topBumper[12] = 
-	{
-		566, 872,
-		599, 870,
-		610, 862,
-		619, 836,
-		614, 832,
-		562, 868
-	};
-
 	bumperPos.x = -SCREEN_WIDTH / 2.0f;
 	bumperPos.y = -SCREEN_HEIGHT / 2.08f;
 
-	ballPos.x = SCREEN_WIDTH / 2;
-	ballPos.y = SCREEN_HEIGHT / 2 - 50;
-	circlePos.x = SCREEN_WIDTH / 2;
-	circlePos.y = SCREEN_HEIGHT / 2;
-	bouncerPos.x = SCREEN_WIDTH / 2;
-	bouncerPos.y = SCREEN_HEIGHT / 2 - 100;
+	ballPos.x = 80;
+	ballPos.y = 150;
+	circlePos.x = 335;
+	circlePos.y = 352;
+	bouncerPos.x = 145;
+	bouncerPos.y = 350;
+	lHolePos.x = 80;
+	lHolePos.y = 175;
+	rHolePos.x = 335;
+	rHolePos.y = 245;
 		   
 	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 
 	/*circlepoint = App->physics->CreateCircleStatic(circlePos.x, circlePos.y, 18);
 	circlepoint->body->GetFixtureList()->SetRestitution(1.5f);*/
-	//bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
-	//bouncer->body->GetFixtureList()->SetDensity(10.0f);
-	//bouncer->body->GetFixtureList()->SetRestitution(1.5f);
+	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
+	bouncer->body->GetFixtureList()->SetDensity(10.0f);
+	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
+
 	sensor = App->physics->CreateCircleSensor(circlePos.x, circlePos.y, 18);
 
+	lHoleSensor = App->physics->CreateCircleSensor(lHolePos.x, lHolePos.y, 15);
+	rHoleSensor = App->physics->CreateCircleSensor(rHolePos.x, rHolePos.y, 15);
+
+	tBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, topBumper, 12);
+	tBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	
 	rBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, rightBumper, 10);
 	rBumper->body->GetFixtureList()->SetRestitution(2.0f);
 	
 	lBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, leftBumper, 14);
 	lBumper->body->GetFixtureList()->SetRestitution(2.0f);
-	
-	tBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, topBumper, 12);
-	tBumper->body->GetFixtureList()->SetRestitution(2.0f);
 
 	return ret;
 }
@@ -134,6 +142,24 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
+
+	if (rightTP)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 337;
+		ballPos.y = 562;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
+		rightTP = false;
+	}
+	if (leftTP)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 80;
+		ballPos.y = 480;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
+		leftTP = false;
+	}
+
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 8));
@@ -164,11 +190,11 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(sprites, ballPos.x, ballPos.y, &ballRect);
 	
 	sensor->GetPosition(circlePos.x, circlePos.y);
-	if (!collision2)
+	if (!collisionSensor)
 	{
 		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &blueCircle);
 	}
-	else if (collision2)
+	else if (collisionSensor)
 	{
 		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &orangeCircle);
 	}
@@ -210,30 +236,23 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		if (bodyA == ball && bodyB == bouncer || bodyA == bouncer && bodyB == ball)
 		{
-			count++;
-			if (count == 1)
-			{
-				collision = true;
-			}
-			if (count == 2)
-			{
-				collision = false;
-				count = 0;
-			}
+			collision = !collision;
 			App->audio->PlayFx(bonus_fx);
 			LOG("COLLISION");
 		}
 		if (bodyA == ball && bodyB == sensor || bodyA == sensor && bodyB == ball)
 		{
-			count2++;
-			if (count2 == 1)
-			{
-				collision2 = true;
-			}
-			if (count2 == 2)
-			{
-				collision2 = false;
-			}
+			collisionSensor = !collisionSensor;
+			LOG("COLLISION 2");
+		}
+
+		if (bodyA == ball && bodyB == lHoleSensor || bodyA == lHoleSensor && bodyB == ball)
+		{
+			leftTP = true;
+		}
+		if (bodyA == ball && bodyB == rHoleSensor || bodyA == rHoleSensor && bodyB == ball)
+		{
+			rightTP = true;
 		}
 
 	}
