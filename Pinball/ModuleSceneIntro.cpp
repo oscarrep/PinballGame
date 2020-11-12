@@ -198,13 +198,13 @@ bool ModuleSceneIntro::Start()
 	smallSensor = App->physics->CreateCircleSensor(circlePos2.x, circlePos2.y, 15);
 
 	tBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, topBumper, 12);
-	tBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	tBumper->body->GetFixtureList()->SetRestitution(1.5f);
 	
 	rBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, rightBumper, 10);
-	rBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	rBumper->body->GetFixtureList()->SetRestitution(1.5f);
 	
 	lBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, leftBumper, 14);
-	lBumper->body->GetFixtureList()->SetRestitution(2.0f);
+	lBumper->body->GetFixtureList()->SetRestitution(1.5f);
 
 	return ret;
 }
@@ -254,13 +254,18 @@ update_status ModuleSceneIntro::Update()
 
 	if (lifes == 4 && App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
-		/*ballPos.x = 422;
-		ballPos.y = 600;*/
+		//ballPos.x = 422;
+		//ballPos.y = 600;
+		if (score > highscore)
+		{
+			highscore = score;
+		}
 		App->physics->world->DestroyBody(ball->body);
 		ballPos.x = 335;
 		ballPos.y = 140;
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 		lifes = 0;
+		score = 0;
 
 	}
 
@@ -279,6 +284,26 @@ update_status ModuleSceneIntro::Update()
 		ballPos.y = 480;
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 		leftTP = false;
+	}
+
+	if (combo == 4)
+	{
+		score += 40;
+		combo = 0;
+		collision2 = false;
+		collision3 = false;
+		collision4 = false;
+		collision5 = false;
+	}
+	if (combo2 == 5)
+	{
+		score += 50;
+		combo2 = 0;
+		collision = false;
+		collision6 = false;
+		collision7 = false;
+		collision8 = false;
+		collision9 = false;
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
@@ -314,11 +339,11 @@ update_status ModuleSceneIntro::Update()
 	}
 	
 	sensor->GetPosition(circlePos.x, circlePos.y);
-	if (!collisionSensor)
+	if (!collision2)
 	{
 		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &blueCircle);
 	}
-	else if (collisionSensor)
+	else if (collision2)
 	{
 		App->renderer->Blit(sprites, circlePos.x, circlePos.y, &orangeCircle);
 	}
@@ -432,11 +457,29 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			collision = !collision;
 			App->audio->PlayFx(bonus_fx);
+			if (collision == true)
+			{
+				combo2++;
+			}
+			else if (collision == false)
+			{
+				combo2--;
+			}
+			score += 10;
 			LOG("COLLISION");
 		}
 		if (bodyA == ball && bodyB == sensor || bodyA == sensor && bodyB == ball)
 		{
-			collisionSensor = !collisionSensor;
+			collision2 = !collision2;
+			if (collision2 == true)
+			{
+				combo++;
+			}
+			else if (collision2 == false)
+			{
+				combo--;
+			}
+			score += 10;
 			LOG("COLLISION 2");
 		}
 
@@ -451,30 +494,93 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == smallSensor || bodyA == smallSensor && bodyB == ball)
 		{
 			collision3 = !collision3;
+			if (collision3 == true)
+			{
+				combo++;
+			}
+			else if (collision3 == false)
+			{
+				combo--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == sensor2 || bodyA == sensor2 && bodyB == ball)
 		{
 			collision4 = !collision4;
+			if (collision4 == true)
+			{
+				combo++;
+			}
+			else if (collision4 == false)
+			{
+				combo--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == sensor3 || bodyA == sensor3 && bodyB == ball)
 		{
 			collision5 = !collision5;
+			if (collision5 == true)
+			{
+				combo++;
+			}
+			else if (collision5 == false)
+			{
+				combo--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == mediumBouncer || bodyA == mediumBouncer && bodyB == ball)
 		{
 			collision6 = !collision6;
+			if (collision6 == true)
+			{
+				combo2++;
+			}
+			else if (collision6 == false)
+			{
+				combo2--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == mediumBouncer2 || bodyA == mediumBouncer2 && bodyB == ball)
 		{
 			collision7 = !collision7;
+			if (collision7 == true)
+			{
+				combo2++;
+			}
+			else if (collision7 == false)
+			{
+				combo2--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == mediumBouncer3 || bodyA == mediumBouncer3 && bodyB == ball)
 		{
 			collision8 = !collision8;
+			if (collision8 == true)
+			{
+				combo2++;
+			}
+			else if (collision8 == false)
+			{
+				combo2--;
+			}
+			score += 10;
 		}
 		if (bodyA == ball && bodyB == smallBouncer || bodyA == smallBouncer && bodyB == ball)
 		{
 			collision9 = !collision9;
+			if (collision9 == true)
+			{
+				combo2++;
+			}
+			else if (collision9 == false)
+			{
+				combo2--;
+			}
+			score += 10;
 		}
 
 	}

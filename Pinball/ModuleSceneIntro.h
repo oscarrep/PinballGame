@@ -20,9 +20,14 @@ public:
 public:
 
 	int lifes = 0;
+	int combo = 0;
+	int combo2 = 0;
+	int score = 0;
+	int highscore = 0;
 
 	//int count = 0;
 	bool collision = false;
+	bool collision2 = false;
 	bool collision3 = false;
 	bool collision4 = false;
 	bool collision5 = false;
@@ -32,7 +37,6 @@ public:
 	bool collision9 = false;
 
 	//int count2 = 0;
-	bool collisionSensor = false;
 
 	bool rightTP = false;
 	bool leftTP = false;
@@ -40,6 +44,7 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;
 	p2List<PhysBody*>	Bouncer;
+	p2List<PhysBody*>	ramp;
 	p2List<PhysBody*>	chains;
 
 
