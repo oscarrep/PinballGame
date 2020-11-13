@@ -33,11 +33,17 @@ bool ModuleSceneIntro::Start()
 	scoreTex = App->fonts->Load("pinball/Score.png", "0123456789", 1);
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	bluefx = App->audio->LoadFx("pinball/bluesensor.wav");	
+	tpfx = App->audio->LoadFx("pinball/tpfx.wav");
+
 	App->audio->PlayMusic("pinball/pinball_song.ogg");
 	Mix_VolumeMusic(20);
 
 	fx = App->physics->CreateRectangleSensor(410, 42, 24, 24);
 	volume = App->physics->CreateRectangleSensor(39, 42, 24, 24);
+
+	// ---------------------------------------------------   Rectangle measurements
+
 
 	tableRect.x = 222;
 	tableRect.y = 369;
@@ -139,6 +145,9 @@ bool ModuleSceneIntro::Start()
 		363, 1052
 	};
 
+	// ---------------------------------------------------   Initializing all the positions of the bodies
+
+
 	bumperPos.x = -SCREEN_WIDTH / 2.0f;
 	bumperPos.y = -SCREEN_HEIGHT / 2.08f;
 
@@ -177,30 +186,29 @@ bool ModuleSceneIntro::Start()
 
 	ballPos.x = 415;
 	ballPos.y = 400;
-		   
+
+	// ---------------------------------------------------   Creating the bodies
+	
 	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
 
-	/*circlepoint = App->physics->CreateCircleStatic(circlePos.x, circlePos.y, 18);
-	circlepoint->body->GetFixtureList()->SetRestitution(1.5f);*/
+	// BOUNCERS
+
 	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 25);
-	//bouncer->body->GetFixtureList()->SetDensity(10.0f);
 	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
 
 	mediumBouncer = App->physics->CreateStaticCircle(mBouncerPos.x, mBouncerPos.y, 17);
-	//mediumBouncer->body->GetFixtureList()->SetDensity(10.0f);
 	mediumBouncer->body->GetFixtureList()->SetRestitution(1.5f);
 
 	mediumBouncer2 = App->physics->CreateStaticCircle(mBouncerPos2.x, mBouncerPos2.y, 17);
-	//mediumBouncer2->body->GetFixtureList()->SetDensity(10.0f);
 	mediumBouncer2->body->GetFixtureList()->SetRestitution(1.5f);
 
 	mediumBouncer3 = App->physics->CreateStaticCircle(mBouncerPos3.x, mBouncerPos3.y, 17);
-	//mediumBouncer3->body->GetFixtureList()->SetDensity(10.0f);
 	mediumBouncer3->body->GetFixtureList()->SetRestitution(1.5f);
 
 	smallBouncer = App->physics->CreateStaticCircle(sBouncerPos.x, sBouncerPos.y, 12);
-	//smallBouncer->body->GetFixtureList()->SetDensity(10.0f);
 	smallBouncer->body->GetFixtureList()->SetRestitution(1.5f);
+
+	// SENSORS
 
 	sensor = App->physics->CreateCircleSensor(circlePos.x, circlePos.y, 18);
 	sensor2 = App->physics->CreateCircleSensor(circlePos3.x, circlePos3.y, 18);
@@ -210,6 +218,8 @@ bool ModuleSceneIntro::Start()
 	rHoleSensor = App->physics->CreateCircleSensor(rHolePos.x, rHolePos.y, 10);
 
 	smallSensor = App->physics->CreateCircleSensor(circlePos2.x, circlePos2.y, 15);
+
+	// BUMPERS
 
 	tBumper = App->physics->CreateChain(bumperPos.x, bumperPos.y, topBumper, 12);
 	tBumper->body->GetFixtureList()->SetRestitution(0.5f);
@@ -239,6 +249,8 @@ update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
 
+	// -------------------------------------------    Player life
+
 	if (ballPos.y >= 768 && lifes < 4)
 	{
 		App->physics->world->DestroyBody(ball->body);
@@ -248,6 +260,8 @@ update_status ModuleSceneIntro::Update()
 		lifes++;
 		LOG("%i", lifes);
 	}
+
+	// -------------------------------------------    Restart
 
 	if (lifes == 4 && App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
@@ -305,19 +319,9 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 8));
-		circles.getLast()->data->listener = this;
+		App->physics->world->DestroyBody(ball->body);
+		ball = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 7);
 	}
-
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 20,40));
-	}
-
-	/*if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		
-	}*/
 
 	// Prepare for raycast ------------------------------------------------------
 	
@@ -436,16 +440,6 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 
-	/*c = Bouncer.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(sprites, x, y, &bouncerRect, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}*/
-
 	//Audio volume management
 
 	if (App->input->GetMouseX() <= 44 && App->input->GetMouseY() <= 42 && App->input->GetMouseX() >= 20 && App->input->GetMouseY() >= 18 && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
@@ -495,6 +489,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			collision = !collision;
 			App->audio->PlayFx(bonus_fx);
+
 			if (collision == true)
 			{
 				combo2++;
@@ -509,6 +504,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == sensor || bodyA == sensor && bodyB == ball)
 		{
 			collision2 = !collision2;
+			App->audio->PlayFx(bluefx);
+
 			if (collision2 == true)
 			{
 				combo++;
@@ -517,21 +514,27 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				combo--;
 			}
-			score += 10;
+			score += 5;
 			LOG("COLLISION 2");
 		}
 
 		if (bodyA == ball && bodyB == lHoleSensor || bodyA == lHoleSensor && bodyB == ball)
 		{
 			leftTP = true;
+			App->audio->PlayFx(tpfx);
+
 		}
 		if (bodyA == ball && bodyB == rHoleSensor || bodyA == rHoleSensor && bodyB == ball)
 		{
 			rightTP = true;
+			App->audio->PlayFx(tpfx);
+
 		}
 		if (bodyA == ball && bodyB == smallSensor || bodyA == smallSensor && bodyB == ball)
 		{
 			collision3 = !collision3;
+			App->audio->PlayFx(bluefx);
+
 			if (collision3 == true)
 			{
 				combo++;
@@ -545,6 +548,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == sensor2 || bodyA == sensor2 && bodyB == ball)
 		{
 			collision4 = !collision4;
+			App->audio->PlayFx(bluefx);
+
 			if (collision4 == true)
 			{
 				combo++;
@@ -558,6 +563,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == sensor3 || bodyA == sensor3 && bodyB == ball)
 		{
 			collision5 = !collision5;
+			App->audio->PlayFx(bluefx);
+
 			if (collision5 == true)
 			{
 				combo++;
@@ -571,6 +578,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == mediumBouncer || bodyA == mediumBouncer && bodyB == ball)
 		{
 			collision6 = !collision6;
+			App->audio->PlayFx(bonus_fx);
+
 			if (collision6 == true)
 			{
 				combo2++;
@@ -584,6 +593,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == mediumBouncer2 || bodyA == mediumBouncer2 && bodyB == ball)
 		{
 			collision7 = !collision7;
+			App->audio->PlayFx(bonus_fx);
+
 			if (collision7 == true)
 			{
 				combo2++;
@@ -597,6 +608,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == mediumBouncer3 || bodyA == mediumBouncer3 && bodyB == ball)
 		{
 			collision8 = !collision8;
+			App->audio->PlayFx(bonus_fx);
+
 			if (collision8 == true)
 			{
 				combo2++;
@@ -610,6 +623,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == ball && bodyB == smallBouncer || bodyA == smallBouncer && bodyB == ball)
 		{
 			collision9 = !collision9;
+			App->audio->PlayFx(bonus_fx);
+
 			if (collision9 == true)
 			{
 				combo2++;
@@ -618,7 +633,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				combo2--;
 			}
-			score += 10;
+			score += 15;
 		}
 
 	}

@@ -18,23 +18,23 @@ ModuleMenu::~ModuleMenu()
 
 bool ModuleMenu::Start()
 {
-	menuRect = { 0,0,441,728 };
-	menuTex = App->textures->Load("pinball/menu.png");
+	//menuRect = { 0,0,441,728 };
+	//menuTex = App->textures->Load("pinball/menu.png");
 
-	App->player->CleanUp();
+	//App->player->CleanUp();
 
 	return true;
 }
 
 update_status ModuleMenu::Update()
 {
-	App->renderer->Blit(menuTex, 0, 0, &menuRect);
+	//App->renderer->Blit(menuTex, 0, 0, &menuRect);
 
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleMenu::CleanUp()
 {
-	App->textures->Unload(menuTex);
+	//App->textures->Unload(menuTex);
 	return true;
 }

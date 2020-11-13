@@ -6,6 +6,8 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleAudio.h"
+
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -18,6 +20,8 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
+
+	flipperfx = App->audio->LoadFx("pinball/FlipperDown.wav");
 
 	rFlipperPos = { 271,695 };
 	lFlipperPos = { 175,695 };
@@ -54,6 +58,7 @@ update_status ModulePlayer::Update()
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
 		rFlipper->body->ApplyTorque(250.0, true);
+		App->audio->PlayFx(flipperfx);
 	}
 	else if (rFlipper->body->IsAwake())
 	{
@@ -63,6 +68,7 @@ update_status ModulePlayer::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		lFlipper->body->ApplyTorque(-250.0, true);
+		App->audio->PlayFx(flipperfx);
 	}
 	else if (lFlipper->body->IsAwake())
 	{

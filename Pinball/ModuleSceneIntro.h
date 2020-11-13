@@ -100,4 +100,7 @@ public:
 	iPoint				lHolePos;
 
 	uint				bonus_fx;
+	uint				bluefx;
+	uint				tpfx;
+
 };

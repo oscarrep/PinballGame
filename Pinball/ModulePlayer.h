@@ -25,5 +25,7 @@ public:
 
 	SDL_Rect springRect;
 
+	uint flipperfx;
+
 	iPoint rFlipperPos, lFlipperPos, springPos;
 };
