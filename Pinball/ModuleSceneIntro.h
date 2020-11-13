@@ -25,12 +25,11 @@ public:
 	int score = 0;
 	int highscore = 0;
 	int scoreTex;
-	int chances;
 
-	char text[10];
-	char text2[10];
+	char scoreChar[10];
+	char lifesChar[10];
+	char highscoreChar[10];
 
-	//int count = 0;
 	bool collision = false;
 	bool collision2 = false;
 	bool collision3 = false;
@@ -40,8 +39,6 @@ public:
 	bool collision7 = false;
 	bool collision8 = false;
 	bool collision9 = false;
-
-	//int count2 = 0;
 
 	bool rightTP = false;
 	bool leftTP = false;
@@ -91,7 +88,7 @@ public:
 	SDL_Rect			rightFlipperRect;
 	SDL_Rect			leftFlipperRect;
 	
-	iPoint				ballPos; 
+	iPoint				ballPos;
 	iPoint				circlePos, circlePos2, circlePos3, circlePos4;
 	iPoint				bouncerPos, mBouncerPos, mBouncerPos2, mBouncerPos3, sBouncerPos;
 	iPoint				bumperPos;

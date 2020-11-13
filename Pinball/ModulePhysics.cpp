@@ -185,7 +185,7 @@ bool ModulePhysics::Start()
 
 	App->scene_intro->chains.add(CreateChain(x, y, wall, 98));
 	App->scene_intro->chains.add(CreateChain(x, y, internal_line, 82));
-	App->scene_intro->chains.add(CreateChain(x, y-1, external_line, 96));
+	App->scene_intro->chains.add(CreateChain(x, y-2, external_line, 96));
 
 	return true;
 }
