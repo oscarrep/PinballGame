@@ -24,6 +24,11 @@ public:
 	int combo2 = 0;
 	int score = 0;
 	int highscore = 0;
+	int scoreTex;
+	int chances;
+
+	char text[10];
+	char text2[10];
 
 	//int count = 0;
 	bool collision = false;
@@ -83,6 +88,8 @@ public:
 	SDL_Rect			mediumBouncerLight;
 	SDL_Rect			smallBouncerLight;
 	SDL_Rect			sSensorRect;
+	SDL_Rect			rightFlipperRect;
+	SDL_Rect			leftFlipperRect;
 	
 	iPoint				ballPos; 
 	iPoint				circlePos, circlePos2, circlePos3, circlePos4;
@@ -90,8 +97,6 @@ public:
 	iPoint				bumperPos;
 	iPoint				rHolePos;
 	iPoint				lHolePos;
-	iPoint				rightFlipperPos;
-	iPoint				leftFlipperPos;
 
 	uint				bonus_fx;
 };

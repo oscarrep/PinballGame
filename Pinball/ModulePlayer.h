@@ -14,5 +14,8 @@ public:
 	bool CleanUp();
 
 public:
+	PhysBody* rFlipper;
+	PhysBody* lFlipper;
 
+	iPoint rFlipperPos, lFlipperPos;
 };

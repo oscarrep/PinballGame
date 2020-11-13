@@ -6,6 +6,8 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "ModulePlayer.h"
+#include "ModuleFonts.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -26,13 +28,26 @@ bool ModuleSceneIntro::Start()
 
 	circle = App->textures->Load("pinball/wheel.png"); 
 	box = App->textures->Load("pinball/crate.png");
-	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	sprites = App->textures->Load("pinball/Textures2.png");
+
+	scoreTex = App->fonts->Load("pinball/numbers.png", "0123456789", 1);
+
+	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	tableRect.x = 222;
 	tableRect.y = 369;
 	tableRect.h = 730;
 	tableRect.w = 442;
+
+	leftFlipperRect.x = 24;
+	leftFlipperRect.y = 473;
+	leftFlipperRect.h = 33;
+	leftFlipperRect.w = 68;
+
+	rightFlipperRect.x = 113;
+	rightFlipperRect.y = 475;
+	rightFlipperRect.h = 33;
+	rightFlipperRect.w = 68;
 
 	bouncerRect.x = 9;
 	bouncerRect.y = 565;
@@ -155,20 +170,14 @@ bool ModuleSceneIntro::Start()
 	mBouncerPos3.x = 204;
 	mBouncerPos3.y = 531;
 	
-	sBouncerPos.x = 63;
-	sBouncerPos.y = 529;
-
-	rightFlipperPos = { 271,695 };
-	leftFlipperPos = { 175,695 };
-
-	lFlipper = App->physics->CreateFlipper(leftFlipperPos.x, leftFlipperPos.y, 60, 30, false);
-	rFlipper = App->physics->CreateFlipper(rightFlipperPos.x, rightFlipperPos.y, 60, 30, true);
+	sBouncerPos.x = 65;
+	sBouncerPos.y = 525;
 		   
 	ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 
 	/*circlepoint = App->physics->CreateCircleStatic(circlePos.x, circlePos.y, 18);
 	circlepoint->body->GetFixtureList()->SetRestitution(1.5f);*/
-	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 27);
+	bouncer = App->physics->CreateStaticCircle(bouncerPos.x, bouncerPos.y, 25);
 	bouncer->body->GetFixtureList()->SetDensity(10.0f);
 	bouncer->body->GetFixtureList()->SetRestitution(1.5f);
 
@@ -215,6 +224,7 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 
 	App->textures->Unload(sprites);
+	App->fonts->UnLoad(scoreTex);
 
 	return true;
 }
@@ -223,24 +233,6 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
-
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-	{
-		rFlipper->body->ApplyTorque(250.0, true);
-	}
-	else if (rFlipper->body->IsAwake())
-	{
-		rFlipper->body->ApplyTorque(-250.0, false);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-	{
-		lFlipper->body->ApplyTorque(-250.0, true);
-	}
-	else if (lFlipper->body->IsAwake())
-	{
-		lFlipper->body->ApplyTorque(250.0, false);
-	}
 
 	if (ballPos.y >= 768 && lifes < 4)
 	{
@@ -330,6 +322,9 @@ update_status ModuleSceneIntro::Update()
 
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* c = circles.getFirst();
+
+	App->renderer->Blit(sprites, App->player->lFlipperPos.x - 78 / 2, App->player->lFlipperPos.y - 48 / 2, &leftFlipperRect, 1.0f, App->player->lFlipper->GetRotation());
+	App->renderer->Blit(sprites, App->player->rFlipperPos.x - 78 / 2, App->player->rFlipperPos.y - 48 / 2, &rightFlipperRect, 1.0f, App->player->rFlipper->GetRotation());
 
 	if (lifes <= 4)
 	{
@@ -445,6 +440,12 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(sprites, x, y, &bouncerRect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}*/
+
+	sprintf_s(text, 10, "%7d", score);
+	App->fonts->BlitText(135, 35, scoreTex, text);
+
+	sprintf_s(text2, 10, "%7d", lifes);
+	App->fonts->BlitText(300, 35, scoreTex, text2);
 
 	return UPDATE_CONTINUE;
 }
