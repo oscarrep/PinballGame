@@ -42,6 +42,8 @@ public:
 
 	bool rightTP = false;
 	bool leftTP = false;
+	bool mute = false;
+	bool mutefx = false;
 
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;
@@ -68,6 +70,8 @@ public:
 	PhysBody*			rBumper;
 	PhysBody*			rFlipper;
 	PhysBody*			lFlipper;
+	PhysBody*			volume;
+	PhysBody*			fx;
 
 	SDL_Texture*		circle;
 	SDL_Texture*		box;
