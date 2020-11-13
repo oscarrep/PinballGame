@@ -137,8 +137,8 @@ bool ModuleSceneIntro::Start()
 	bumperPos.x = -SCREEN_WIDTH / 2.0f;
 	bumperPos.y = -SCREEN_HEIGHT / 2.08f;
 
-	ballPos.x = 63;
-	ballPos.y = 1500;
+	ballPos.x = 415;
+	ballPos.y = 400;
 
 	circlePos.x = 336;
 	circlePos.y = 352;
@@ -237,8 +237,8 @@ update_status ModuleSceneIntro::Update()
 	if (ballPos.y >= 768 && lifes < 4)
 	{
 		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 300;
-		ballPos.y = 600;
+		ballPos.x = 415;
+		ballPos.y = 400;
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 		lifes++;
 		LOG("%i", lifes);
@@ -253,8 +253,8 @@ update_status ModuleSceneIntro::Update()
 			highscore = score;
 		}
 		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 335;
-		ballPos.y = 140;
+		ballPos.x = 415;
+		ballPos.y = 400;
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 10);
 		lifes = 0;
 		score = 0;

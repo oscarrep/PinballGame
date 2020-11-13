@@ -367,6 +367,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
+	b->GetFixtureList()->SetRestitution(0.3f);
 
 	return pbody;
 }
@@ -570,4 +571,47 @@ PhysBody* ModulePhysics::CreateFlipper(int x, int y, int width, int height, bool
 	revolute_joint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
 
 	return flipper;
+}
+
+PhysBody* ModulePhysics::CreateStaticRect(int x, int y, int width, int height)
+{
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+	b2PolygonShape box;
+	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
+
+	b2FixtureDef fixture;
+	fixture.shape = &box;
+	fixture.density = 1.0f;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = width * 0.5f;
+	pbody->height = height * 0.5f;
+
+	return pbody;
+}
+
+PhysBody* ModulePhysics::CreateSpring(int x, int y, int width, int height)
+{
+	PhysBody* spring = App->physics->CreateRectangle(x, y - 50, width, 1);
+	PhysBody* springBase = App->physics->CreateStaticRect(x, y, width, height);
+
+	b2PrismaticJointDef prismaticJointDef;
+	prismaticJointDef.Initialize(spring->body, springBase->body, springBase->body->GetWorldCenter(), b2Vec2(0, 1));
+	prismaticJointDef.collideConnected = true;
+
+	prismaticJointDef.lowerTranslation = -0.25f;
+	prismaticJointDef.upperTranslation = 0.25f;
+	prismaticJointDef.enableLimit = true;
+
+	prismatic_joint = (b2PrismaticJoint*)world->CreateJoint(&prismaticJointDef);
+
+	return spring;
 }

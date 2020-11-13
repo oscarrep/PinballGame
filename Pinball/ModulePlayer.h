@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "p2Point.h"
+#include "Animation.h"
 
 class ModulePlayer : public Module
 {
@@ -16,6 +17,13 @@ public:
 public:
 	PhysBody* rFlipper;
 	PhysBody* lFlipper;
+	PhysBody* spring;
 
-	iPoint rFlipperPos, lFlipperPos;
+	Animation springAnim;
+	Animation idle;
+	Animation* current_animation = nullptr;
+
+	SDL_Rect springRect;
+
+	iPoint rFlipperPos, lFlipperPos, springPos;
 };
