@@ -72,7 +72,7 @@ bool ModuleWindow::Init()
 
 update_status ModuleWindow::Update()
 {
-	p2SString title("Score: %i   Lifes : %i Highscore : %i", App->scene_intro->score, App->scene_intro->lifes, App->scene_intro->highscore);
+	p2SString title("Lifes : %i 		Score: %i       	Highscore : %i", App->scene_intro->lifes, App->scene_intro->score, App->scene_intro->highscore);
 	SetTitle(title.GetString());
 	return UPDATE_CONTINUE;
 }
