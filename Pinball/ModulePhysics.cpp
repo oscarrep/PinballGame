@@ -488,7 +488,7 @@ update_status ModulePhysics::PostUpdate()
 		App->scene_intro->jointed = true;
 	}
 
-	if (mouse_up == true && mouse_joint != NULL || App->scene_intro->rightTP || App->scene_intro->leftTP)
+	if (mouse_up == true && mouse_joint != NULL)
 	{
 		world->DestroyJoint(mouse_joint);
 		mouse_joint = NULL;
