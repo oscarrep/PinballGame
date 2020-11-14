@@ -32,14 +32,13 @@ bool ModuleEnd::Start()
 
 update_status ModuleEnd::Update()
 {
-	if (App->input->GetMouseX() <= 215 && App->input->GetMouseX() >= 15 && App->input->GetMouseY() >= 340 && App->input->GetMouseY() <= 390)
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-		{
-			App->menu->Enable();
-			this->Disable();
-		}
+		App->menu->Enable();
+		this->Disable();
 	}
+
 	App->renderer->Blit(initTex, 0, 0, &initRect);
 	return UPDATE_CONTINUE;
 }

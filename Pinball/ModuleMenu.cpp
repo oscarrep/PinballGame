@@ -29,22 +29,20 @@ bool ModuleMenu::Start()
 	App->physics->Disable();
 	App->endScene->Disable();
 	play = App->physics->CreateRectangleSensor(110, 366, 440, 100);
+	App->player->CleanUp();
 
 	return true;
 }
 
 update_status ModuleMenu::Update()
 {
-	if (App->input->GetMouseX() >= 115 && App->input->GetMouseX() <= 215 && App->input->GetMouseY() >= 340 && App->input->GetMouseY() <= 390)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-		{
-			App->physics->Enable();
-			App->scene_intro->Enable();
-			App->player->Enable();
+		App->physics->Enable();
+		App->scene_intro->Enable();
+		App->player->Enable();
 
-			this->Disable();
-		}
+		this->Disable();
 	}
 
 	App->renderer->Blit(menuTex, 0, 0, &menuRect);
