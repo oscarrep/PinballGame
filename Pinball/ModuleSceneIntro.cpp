@@ -270,12 +270,6 @@ update_status ModuleSceneIntro::Update()
 		collision9 = false;
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		App->physics->world->DestroyBody(ball->body);
-		ball = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 7);
-	}
-
 	// Prepare for raycast ------------------------------------------------------
 	
 	iPoint mouse;
@@ -384,14 +378,6 @@ update_status ModuleSceneIntro::Update()
 	{
 		App->renderer->Blit(sprites, sBouncerPos.x, sBouncerPos.y, &smallBouncerLight);
 	}
-	
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(sprites, x, y, &ballRect, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
 
 	//Audio volume management
 
@@ -436,6 +422,12 @@ update_status ModuleSceneIntro::Update()
 
 update_status ModuleSceneIntro::PostUpdate()
 {
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ball = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 7);
+	}
+	
 	// -------------------------------------------    Player life
 
 	if (ballPos.y >= 768 && lifes < 4)

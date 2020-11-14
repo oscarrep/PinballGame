@@ -28,7 +28,6 @@ bool ModuleMenu::Start()
 	App->player->Disable();
 	App->physics->Disable();
 	App->endScene->Disable();
-	play = App->physics->CreateRectangleSensor(110, 366, 440, 100);
 	App->player->CleanUp();
 
 	return true;
@@ -36,7 +35,7 @@ bool ModuleMenu::Start()
 
 update_status ModuleMenu::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && App->input->GetMouseX() >= 115 && App->input->GetMouseX() <= 315 && App->input->GetMouseY() >= 365 && App->input->GetMouseY() <= 415)
 	{
 		App->physics->Enable();
 		App->scene_intro->Enable();
