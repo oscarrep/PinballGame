@@ -14,6 +14,8 @@ class ModuleSceneIntro;
 class ModulePhysics;
 class ModuleFonts;
 class ModuleMenu;
+class ModuleEnd;
+
 
 class Application
 {
@@ -28,6 +30,7 @@ public:
 	ModulePhysics* physics;
 	ModuleFonts* fonts;
 	ModuleMenu* menu;
+	ModuleEnd* endScene;
 
 private:
 

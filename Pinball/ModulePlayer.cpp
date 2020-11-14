@@ -23,7 +23,7 @@ bool ModulePlayer::Start()
 
 	flipperfx = App->audio->LoadFx("pinball/FlipperDown.wav");
 
-	rFlipperPos = { 271,695 };
+	rFlipperPos = { 279,695 };
 	lFlipperPos = { 175,695 };
 
 	idle.PushBack({ 21,665,21,60 });
@@ -55,10 +55,18 @@ update_status ModulePlayer::Update()
 {
 	current_animation = &idle;
 
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	{
+		App->audio->PlayFx(flipperfx);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	{
+		App->audio->PlayFx(flipperfx);
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
 		rFlipper->body->ApplyTorque(250.0, true);
-		App->audio->PlayFx(flipperfx);
 	}
 	else if (rFlipper->body->IsAwake())
 	{
@@ -68,7 +76,6 @@ update_status ModulePlayer::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		lFlipper->body->ApplyTorque(-250.0, true);
-		App->audio->PlayFx(flipperfx);
 	}
 	else if (lFlipper->body->IsAwake())
 	{
@@ -79,7 +86,6 @@ update_status ModulePlayer::Update()
 	{
 		current_animation = &springAnim;
 		LOG("down");
-		//spring->body->ApplyForceToCenter({ 0,100 }, true);
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
 	{

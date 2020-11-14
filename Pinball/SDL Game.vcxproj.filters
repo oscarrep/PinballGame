@@ -71,6 +71,9 @@
     <ClInclude Include="ModuleMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -110,6 +113,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

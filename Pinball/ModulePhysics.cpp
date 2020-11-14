@@ -381,6 +381,12 @@ update_status ModulePhysics::PostUpdate()
 	if(!debug)
 		return UPDATE_CONTINUE;
 
+	bool mouse_down = (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN);
+	bool mouse_repeat = (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT);
+	bool mouse_up = (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP);
+
+	b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
+
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -450,8 +456,46 @@ update_status ModulePhysics::PostUpdate()
 				}
 				break;
 			}
+
+			if (mouse_down == true && body_clicked == NULL)
+			{
+				if (f->GetShape()->TestPoint(b->GetTransform(), mouse_position) == true)
+					body_clicked = b;
+			}
 		}
 	}
+
+	if (body_clicked != NULL && mouse_joint == NULL)
+	{
+		b2MouseJointDef def;
+		def.bodyA = ground;
+		def.bodyB = body_clicked;
+		def.target = mouse_position;
+		def.dampingRatio = 0.5f;
+		def.frequencyHz = 2.0f;
+		def.maxForce = 100.0f * body_clicked->GetMass();
+
+		mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
+	}
+
+	if (mouse_repeat == true && mouse_joint != NULL)
+	{
+		mouse_joint->SetTarget(mouse_position);
+		App->renderer->DrawLine(
+			METERS_TO_PIXELS(mouse_joint->GetAnchorA().x), METERS_TO_PIXELS(mouse_joint->GetAnchorA().y),
+			METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y),
+			255, 0, 0);
+		App->scene_intro->jointed = true;
+	}
+
+	if (mouse_up == true && mouse_joint != NULL)
+	{
+		world->DestroyJoint(mouse_joint);
+		mouse_joint = NULL;
+		body_clicked = NULL;
+		App->scene_intro->jointed = false;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -462,7 +506,8 @@ bool ModulePhysics::CleanUp()
 	LOG("Destroying physics world");
 
 	// Delete the whole physics world!
-	delete world;
+	if (IsEnabled() == true)
+		delete world;
 
 	return true;
 }

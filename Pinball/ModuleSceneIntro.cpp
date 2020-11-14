@@ -8,6 +8,8 @@
 #include "ModulePhysics.h"
 #include "ModulePlayer.h"
 #include "ModuleFonts.h"
+#include "ModuleEnd.h"
+
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -24,10 +26,9 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	App->endScene->Disable();
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	circle = App->textures->Load("pinball/wheel.png"); 
-	box = App->textures->Load("pinball/crate.png");
 	sprites = App->textures->Load("pinball/Textures2.png");
 
 	scoreTex = App->fonts->Load("pinball/Score.png", "0123456789", 1);
@@ -249,54 +250,6 @@ update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(sprites, 0, 0, &tableRect);
 
-	// -------------------------------------------    Player life
-
-	if (ballPos.y >= 768 && lifes < 4)
-	{
-		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 415;
-		ballPos.y = 400;
-		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
-		lifes++;
-		LOG("%i", lifes);
-	}
-
-	// -------------------------------------------    Restart
-
-	if (lifes == 4 && App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		//ballPos.x = 422;
-		//ballPos.y = 600;
-		if (score > highscore)
-		{
-			highscore = score;
-		}
-		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 415;
-		ballPos.y = 400;
-		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
-		lifes = 0;
-		score = 0;
-
-	}
-
-	if (rightTP)
-	{
-		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 337;
-		ballPos.y = 562;
-		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
-		rightTP = false;
-	}
-	if (leftTP)
-	{
-		App->physics->world->DestroyBody(ball->body);
-		ballPos.x = 80;
-		ballPos.y = 480;
-		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
-		leftTP = false;
-	}
-
 	if (combo == 4)
 	{
 		score += 40;
@@ -477,6 +430,60 @@ update_status ModuleSceneIntro::Update()
 
 	sprintf_s(highscoreChar, 10, "%7d", highscore);
 	App->fonts->BlitText(220, 35, scoreTex, highscoreChar);
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleSceneIntro::PostUpdate()
+{
+	// -------------------------------------------    Player life
+
+	if (ballPos.y >= 768 && lifes < 4)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 415;
+		ballPos.y = 400;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
+		lifes++;
+		LOG("%i", lifes);
+	}
+
+	// -------------------------------------------    Restart
+
+	if (lifes == 4)
+	{
+		//ballPos.x = 422;
+		//ballPos.y = 600;
+		if (score > highscore)
+		{
+			highscore = score;
+		}
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 415;
+		ballPos.y = 400;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
+		lifes = 0;
+		score = 0;
+		App->endScene->Enable();
+
+	}
+
+	if (rightTP)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 337;
+		ballPos.y = 562;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
+		rightTP = false;
+	}
+	if (leftTP)
+	{
+		App->physics->world->DestroyBody(ball->body);
+		ballPos.x = 80;
+		ballPos.y = 480;
+		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
+		leftTP = false;
+	}
 
 	return UPDATE_CONTINUE;
 }

@@ -4,11 +4,11 @@
 #include "p2Point.h"
 #include "Globals.h"
 
-class ModuleMenu : public Module
+class ModuleEnd : public Module
 {
 public:
-	ModuleMenu(Application* app, bool start_enabled = true);
-	~ModuleMenu();
+	ModuleEnd(Application* app, bool start_enabled = true);
+	~ModuleEnd();
 
 	bool Start();
 	update_status Update();
@@ -16,10 +16,9 @@ public:
 
 public:
 
-	SDL_Texture* menuTex;
-
-	SDL_Rect menuRect;
-
+	SDL_Texture* initTex;
 	PhysBody* play;
+	SDL_Rect initRect;
+
 
 };

@@ -14,6 +14,7 @@ public:
 
 	bool Start();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
@@ -44,6 +45,7 @@ public:
 	bool leftTP = false;
 	bool mute = false;
 	bool mutefx = false;
+	bool jointed = false;
 
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	boxes;

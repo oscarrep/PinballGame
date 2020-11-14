@@ -68,5 +68,6 @@ private:
 	b2MouseJoint*		mouse_joint;
 	b2RevoluteJoint*	revolute_joint;
 	b2PrismaticJoint*	prismatic_joint;
-	b2Body* ground;
+	b2Body*				body_clicked;
+	b2Body*				ground;
 };

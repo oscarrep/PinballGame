@@ -10,6 +10,8 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleFonts.h"
 #include "ModuleMenu.h"
+#include "ModuleEnd.h"
+
 
 
 
@@ -27,6 +29,8 @@ Application::Application()
 	physics = new ModulePhysics(this); 
 	fonts = new ModuleFonts(this);
 	menu = new ModuleMenu(this);
+	endScene = new ModuleEnd(this);
+
 
 
 	// The order of calls is very important!
@@ -45,7 +49,8 @@ Application::Application()
 
 	// Scenes
 	AddModule(scene_intro);
-	
+	AddModule(endScene);
+
 	// Player
 	AddModule(player);
 }
