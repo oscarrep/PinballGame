@@ -20,5 +20,7 @@ public:
 	PhysBody* play;
 	SDL_Rect initRect;
 
+	char scoreChar[10];
+	int scoreTex;
 
 };

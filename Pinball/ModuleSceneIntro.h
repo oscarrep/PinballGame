@@ -25,11 +25,14 @@ public:
 	int combo2 = 0;
 	int score = 0;
 	int highscore = 0;
+	int finalScore;
+	int prevScore;
 	int scoreTex;
 
 	char scoreChar[10];
 	char lifesChar[10];
 	char highscoreChar[10];
+	char prevScoreChar[10];
 
 	bool collision = false;
 	bool collision2 = false;

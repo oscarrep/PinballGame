@@ -29,7 +29,7 @@ bool ModuleSceneIntro::Start()
 	App->endScene->Disable();
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	sprites = App->textures->Load("pinball/Textures2.png");
+	sprites = App->textures->Load("pinball/textures.png");
 
 	scoreTex = App->fonts->Load("pinball/Score.png", "0123456789", 1);
 
@@ -415,7 +415,10 @@ update_status ModuleSceneIntro::Update()
 	App->fonts->BlitText(300, 35, scoreTex, lifesChar);
 
 	sprintf_s(highscoreChar, 10, "%7d", highscore);
-	App->fonts->BlitText(220, 35, scoreTex, highscoreChar);
+	App->fonts->BlitText(260, 35, scoreTex, highscoreChar);
+
+	sprintf_s(prevScoreChar, 10, "%7d", prevScore);
+	App->fonts->BlitText(200, 35, score, prevScoreChar);
 
 	return UPDATE_CONTINUE;
 }
@@ -438,6 +441,8 @@ update_status ModuleSceneIntro::PostUpdate()
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
 		lifes++;
 		LOG("%i", lifes);
+		finalScore = score;
+
 	}
 
 	// -------------------------------------------    Restart
@@ -457,10 +462,11 @@ update_status ModuleSceneIntro::PostUpdate()
 		lifes = 0;
 		score = 0;
 		App->endScene->Enable();
+		prevScore = finalScore;
 
 	}
 
-	if (rightTP)
+	if (rightTP && !jointed)
 	{
 		App->physics->world->DestroyBody(ball->body);
 		ballPos.x = 337;
@@ -468,7 +474,7 @@ update_status ModuleSceneIntro::PostUpdate()
 		ball = App->physics->CreateCircle(ballPos.x, ballPos.y, 7);
 		rightTP = false;
 	}
-	if (leftTP)
+	if (leftTP && !jointed)
 	{
 		App->physics->world->DestroyBody(ball->body);
 		ballPos.x = 80;
