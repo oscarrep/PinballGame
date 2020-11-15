@@ -2,7 +2,7 @@
 
 This is a pinball game made using Bullet2D for a Videogame Physics assignment on CITM UPC
 
-## Student
+## Made by
 
 - Oscar Reguera : https://github.com/oscarrep
 
@@ -50,7 +50,7 @@ If the player manages to light up all the blue circles, they will gain 40 extra 
 - The game is faster paced.
 
 
-## Credits
+## References
 
 Music from: https://www.youtube.com/watch?v=D88doSl61Kc
 
